@@ -102,44 +102,45 @@ public class App {
     }
 
     public static void editTask(TodoList list, Scanner scanner) {
-        if (list.isEmpty()) {
-            System.out.println("La lista se encuentra vacía, puedes crear una tarea con el comando \"new\"");
-            return;
-        }
-
         System.out.print("¿Qué tarea deseas editar? Indice: ");
         int index = scanner.nextInt();
-        if (!list.exists(index)) {
+        TodoItem item = null;
+
+        try {
+            item = list.at(index);
+        } catch (TodoListEmptyException e) {
+            System.out.println("La lista se encuentra vacía, puedes crear una tarea con el comando \"new\"");
+            return;
+        } catch (TodoAtPositionNotFoundException e) {
             System.out.println("La tarea seleccionada no existe.");
             return;
         }
 
         System.out.print("Nueva descripción de la tarea: ");
         String description = scanner.next();
-        TodoItem item = list.at(index);
         item.setDescription(description);
         System.out.println("Se ha actualizado la tarea " + index);
     }
 
     public static void removeTask(TodoList list, Scanner scanner) {
-        if (list.isEmpty()) {
-            System.out.println("La lista se encuentra vacía, puedes crear una tarea con el comando \"new\"");
-            return;
-        }
-
         System.out.print("¿Qué tarea deseas eliminar? Indice: ");
         int index = scanner.nextInt();
-        if (!list.exists(index)) {
+
+        try {
+            list.remove(index);
+        } catch (TodoListEmptyException e) {
+            System.out.println("La lista se encuentra vacía, puedes crear una tarea con el comando \"new\"");
+            return;
+        } catch (TodoAtPositionNotFoundException e) {
             System.out.println("La tarea seleccionada no existe.");
             return;
         }
 
-        list.remove(index);
         System.out.println("Se ha eliminado la tarea " + index);
     }
 
     public static void setDone(TodoList list, Scanner scanner) {
-        System.out.println("¿Qué tarea desea marcar como terminada? Indice:");
+        System.out.print("¿Qué tarea desea marcar como terminada? Indice: ");
         int index = scanner.nextInt();
 
         try {
@@ -151,10 +152,12 @@ public class App {
             System.out.println("La tarea seleccionada no existe.");
             return;
         }
+
+        System.out.println("Se ha marcado como terminada la tarea " + index);
     }
 
     public static void setUndone(TodoList list, Scanner scanner) {
-        System.out.println("¿Qué tarea desea marcar como pendiente? Indice:");
+        System.out.print("¿Qué tarea desea marcar como pendiente? Indice: ");
         int index = scanner.nextInt();
 
         try {
@@ -166,6 +169,8 @@ public class App {
             System.out.println("La tarea seleccionada no existe.");
             return;
         }
+
+        System.out.println("Se ha marcado como pendiente la tarea " + index);
     }
 
     public static void getDone(TodoList list) {
